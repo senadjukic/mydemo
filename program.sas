@@ -1,8 +1,10 @@
 ***********************************************************
-*** Initialization
+*** Parameters
 ***********************************************************;
-%let SAS_Version= Viya3.5;
-%let n=5000;
+%let n=1000000;
+%let iopath=/tmp;
+%let ioname=iotest;
+%let iodatasize=100000000;
 
 ***********************************************************
 ***  Helper Macros
@@ -36,7 +38,7 @@ quit;
 %macro PerformanceTest(n);
 title "SAS Performance Test with n=&n";
 title2 "Executed on %SYSFUNC(DATE(), Date9.) at %SYSFUNC(TIME(), TIME8.)";
-title3 "SAS-Version=&SAS_Version";
+title3 "SAS-Version=9.4";
 
 options source source2 mprint linesize = 100
         orientation = landscape;
@@ -186,3 +188,16 @@ title;title2;title3;
 
 %PerformanceTest(&n);
 
+*** IO Test ***;
+libname LOCAL "&iopath";
+
+data  LOCAL.&ioname; 
+   do i=1 to &iodatasize; 
+      var1=int(ranuni(45123)*6864)+1000; 
+      var2=int(ranuni(45123)*6864)+1000; 
+      var3=int(ranuni(45123)*6864)+1000; 
+      var4=int(ranuni(45123)*6864)+1000; 
+      var5=int(ranuni(45123)*6864)+1000; 
+      output; 
+   end; 
+run;
